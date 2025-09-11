@@ -14,8 +14,10 @@ public class Consola {
         if (opcion == 1) {
             System.out.print("Tamaños de página: ");
             int tp = sc.nextInt();
+
             System.out.print("Número de procesos: ");
             int nproc = sc.nextInt();
+            
             System.out.print("Tamaño matrices separados por coma: ");
             String tams = sc.next();
 
@@ -23,8 +25,10 @@ public class Consola {
         } else if (opcion == 2) {
             System.out.print("Número de procesos: ");
             int nproc = sc.nextInt();
+            
             System.out.print("Número de marcos: ");
             int nmarcos = sc.nextInt();
+            
             Opcion2.ejecutarOpcion2(nproc, nmarcos); 
         } else {
             System.out.println("Opción inválida.");
