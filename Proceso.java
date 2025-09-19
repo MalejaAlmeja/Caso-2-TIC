@@ -1,46 +1,57 @@
+
+import java.util.ArrayList;
+
 public class Proceso {
+    int numeroProceso;
     int numReferencias;
     int fallas;
     int hits;
     int swap;
-    int paginaVirtualM1;
-    int paginaVirtualM2;
-    int paginaVirtualM3;
-    int desplazamientoM1;
-    int desplazamientoM2;
-    int desplazamientoM3;
+    double tasaFallas;
+    double tasaExito;
     int marcoInicial;
     int marcoFinal;
 
+    ArrayList<Integer> tablaPaginas = new ArrayList<>();
+    ArrayList<ArrayList<String>> listaDireccionesDV = new ArrayList<>();
+
     
     // Constructor
-    public Proceso(int nr, int pvm1, int pvm2, int pvm3, int dm1, int dm2, int dm3, int mi, int mf) {
+    public Proceso(int np, int nr, int mi, int mf, ArrayList<ArrayList<String>> listaDirecciones) {
+        this.numeroProceso = np;
         this.numReferencias = nr;
-        this.paginaVirtualM1 = pvm1;
-        this.paginaVirtualM2 = pvm2;
-        this.paginaVirtualM3 = pvm3;
-        this.desplazamientoM1 = dm1;
-        this.desplazamientoM2 = dm2;
-        this.desplazamientoM3 = dm3;
         this.marcoInicial = mi;
         this.marcoFinal = mf;
+        this.listaDireccionesDV = listaDirecciones;
+
+        for (int i = 0; i < (mf - mi + 1); i++) {
+            tablaPaginas.add(-1); // Inicializa la tabla de páginas con -1 (indica que no hay página cargada)
+        }
     }
+
+
 
     // Métodos para actualizar estadísticas
     public void registrarFalla() {
         this.fallas++;
+    }
+    public void registrarSwap() {
         this.swap++;
     }
+    public void registrarSwapDoble() {
+        this.swap += 2;
+    }
+
     public void registrarHit() {
         this.hits++;
     }
-    public double calcularTasaFallas() {
-        double tasaFallas = fallas / numReferencias;
-        return Math.round(tasaFallas * 100.0) / 100.0;
+    public void calcularTasaFallas() {
+        this.tasaFallas = (double) this.fallas / (double) this.numReferencias;
+        this.tasaFallas = Math.round(this.tasaFallas * 10000.0) / 10000.0;
     }
-    public double calcularTasaExito() {
-        double tasaExito = hits / numReferencias;
-        return Math.round(tasaExito * 100.0) / 100.0;
+    public void calcularTasaExito() {
+        this.tasaExito = (double) this.hits / (double) this.numReferencias;
+        this.tasaExito = Math.round(this.tasaExito * 10000.0) / 10000.0;
     }
 
 

@@ -3,12 +3,12 @@ Proceso: 0
 - Fallas: 2
 - Hits: 46
 - SWAP: 2
-- Tasa fallas: 0.0
-- Tasa éxito: 0.0
+- Tasa fallas: 0.0417
+- Tasa éxito: 0.9583
 Proceso: 1
 - Num referencias: 192
 - Fallas: 6
 - Hits: 186
-- SWAP: 8
-- Tasa fallas: 0.0
-- Tasa éxito: 0.0
+- SWAP: 6
+- Tasa fallas: 0.0313
+- Tasa éxito: 0.9688
