@@ -14,6 +14,7 @@ public class Opcion2 {
         int TP = 0;
         int marcoActual = 0;
         int numMarcosPorProceso = NMARCOS / NPROC;
+        boolean matricesIguales = false;
         System.out.println("Inicio:");
         //Cargar archivos
         for (int i = 0; i < NPROC; i++) {
@@ -67,11 +68,23 @@ public class Opcion2 {
                 System.out.println("Proceso "+i+": recibe marco "+marcoActual);
             }
 
-                Proceso proceso = new Proceso(i, NR, marcoInicial, marcoFinal-1, listaDireccionesDV);
+                Proceso proceso = new Proceso(NC, NF, i, NR, marcoInicial, marcoFinal-1, listaDireccionesDV);
                 procesos.add(proceso);
                 
             } catch (IOException e) {
                 System.out.print("No se ha realizado la opción 1; no hay archivos existentes.");
+            }
+        }
+
+        int numColumnasAnterior = procesos.get(0).NC;
+        int numFilasAnterior = procesos.get(0).NF;
+        for (Proceso p:procesos){
+            if (p.NC != numColumnasAnterior || p.NF != numFilasAnterior){
+                matricesIguales = false;
+                break;
+            }
+            else{
+                matricesIguales = true;
             }
         }
 
@@ -84,7 +97,7 @@ public class Opcion2 {
                 terminado = true;
                 break;
             }
-
+            else{
             for (Proceso p:procesos){
                 if (p.listaDireccionesDV.isEmpty()){
                     System.out.println("=========================");
@@ -94,24 +107,36 @@ public class Opcion2 {
                     procesosTerminados.add(p);
                     int marcoInicialLiberado= p.marcoInicial;
                     int marcoFinalLiberado= p.marcoFinal;
-                    for (int i=p.marcoInicial; i < p.marcoFinal; i++) {
+                    for (int i=p.marcoInicial; i <= p.marcoFinal; i++) {
                     System.out.println("PROC "+p.numeroProceso+": removiendo marco "+i);
                     }
-                    if (procesos.isEmpty()){
+                    if (procesos.isEmpty() ){
                         terminado = true;
                         break;
                     }
+                    if (matricesIguales){
+                        for (Proceso p2:procesos){
+                            System.out.println("=========================");
+                            System.out.println("Termino proc:" + p2.numeroProceso);
+                            System.out.println("=========================");
+                            for (int i=p2.marcoInicial; i <= p2.marcoFinal; i++) {
+                            System.out.println("PROC "+p2.numeroProceso+": removiendo marco "+i);
+                            }
+                            procesosTerminados.add(p2);
+                        }
+                        terminado = true;
+                        break;
+                    }
+                    Proceso procesoMasFallos = procesos.get(0);
                     for (Proceso p2:procesos){
-                        Proceso procesoMasFallos = procesos.get(0);
                         if (p2.fallas > procesoMasFallos.fallas){
                             procesoMasFallos = p2;
                         }
-                        p2.marcoInicial = marcoInicialLiberado;
-                        p2.marcoFinal = marcoFinalLiberado;
-                        for (int i=p2.marcoInicial; i < p2.marcoFinal; i++) {
-                        System.out.println("PROC "+p.numeroProceso+": asignando marco nuevo "+i);
-                        }
-
+                    }
+                    procesoMasFallos.marcoInicial = marcoInicialLiberado;
+                    procesoMasFallos.marcoFinal = marcoFinalLiberado;
+                    for (int i=procesoMasFallos.marcoInicial; i < procesoMasFallos.marcoFinal; i++) {
+                    System.out.println("PROC "+procesoMasFallos.numeroProceso+": asignando marco nuevo "+i);
                     }
                     
                 }
@@ -146,7 +171,7 @@ public class Opcion2 {
                 System.out.println("PROC "+p.numeroProceso+" envejecimiento");}
             
         
-            }
+            }}
 
         }
 

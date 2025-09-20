@@ -4,6 +4,8 @@ import java.util.ArrayList;
 public class Proceso {
     int numeroProceso;
     int numReferencias;
+    int NF;
+    int NC;
     int fallas;
     int hits;
     int swap;
@@ -17,7 +19,9 @@ public class Proceso {
 
     
     // Constructor
-    public Proceso(int np, int nr, int mi, int mf, ArrayList<ArrayList<String>> listaDirecciones) {
+    public Proceso(int nc, int nf, int np, int nr, int mi, int mf, ArrayList<ArrayList<String>> listaDirecciones) {
+        this.NC = nc;
+        this.NF = nf;
         this.numeroProceso = np;
         this.numReferencias = nr;
         this.marcoInicial = mi;
