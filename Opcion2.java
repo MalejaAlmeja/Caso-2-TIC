@@ -167,6 +167,7 @@ public class Opcion2 {
                         // No hay marcos libres LRU
                         p.tablaPaginas.add(pagina); 
                         p.registrarSwap();
+                        p.registrarSwap();
                     }
                     
                 }
