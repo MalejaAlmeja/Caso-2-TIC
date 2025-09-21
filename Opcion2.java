@@ -14,7 +14,6 @@ public class Opcion2 {
         HashMap<Integer,Proceso> procesos = new HashMap<Integer, Proceso>();
         int marcosProceso = NMARCOS/NPROC;
         Queue<Integer> turnos = new LinkedList<>();
-        Queue<Integer> matrices = new LinkedList<>();
         long[] contadoresLRU = new long[NMARCOS]; //sirve para hacer LRU cada índice es un marco, entonces los valores son los contadores de cada marco
         int[] marcosAsignados = new int[NMARCOS]; //sirve para saber que procesos tiene asignado un marco, el índice es el marco
         int[] dvEnProceso = new int[NPROC]; //sirve para saber que dv esta procesando cada proceso, el indice es el proceso
@@ -27,9 +26,6 @@ public class Opcion2 {
         Arrays.fill(marcosAsignados,-1);
         int TPglobal = 0; 
        
-        int[] offset = new int[NPROC];
-        offset[0]=0;
-        matrices.add(1);
         
         
         System.out.println("Inicio:");
@@ -68,10 +64,6 @@ public class Opcion2 {
                     int pagina = Integer.parseInt(referencia.get(1).trim());
                     int desplazamiento = Integer.parseInt(referencia.get(2).trim());
                     listaDV.add(pagina*TP+desplazamiento);
-                    // for (int d = pagina*TP;d<=(pagina*TP+desplazamiento);d++)
-                    // {
-                    //     listaDV.add(d);
-                    // }
                     
                 }
             }
@@ -79,10 +71,6 @@ public class Opcion2 {
                 e.printStackTrace();
             }
             
-            // for (int d=0;d<NC*NF*4*3;d++)
-            // {
-            //     listaDV.add(d);
-            // }
             for (int j=i*marcosProceso;j<i*marcosProceso+marcosProceso;j++)
             {
                 
@@ -90,24 +78,12 @@ public class Opcion2 {
                 System.out.println("Proceso "+i+": recibe marco "+j);
                 
             }
-            if (i>1)
-            {
-                offset[i]=offset[i-1];
-            }
-            else if(i==1)
-            {
-                offset[i] = procesos.get(0).getNP()*TP;
-            }else if(i==0)
-            {
-                offset[i] = 0;
-            }
             
             TPglobal = TP;
             System.out.println("PROC "+i+"== Terminó de leer archivo de configuración ==");
             Proceso proc_i = new Proceso( NF, NC, NR, NP, listaDV);
             dvEnProceso[i]=listaDV.get(0);
             referenciasProcesadas[i] = 0; //4 por que son enteros
-            //System.out.println(dvEnProceso[i]);
             procesos.put(i, proc_i);
             turnos.add(i);
 
@@ -117,28 +93,11 @@ public class Opcion2 {
         System.out.println("\n Simulación:");
         boolean[] huboFallosPagina = new boolean[NPROC];
         Arrays.fill(huboFallosPagina,false);
-        int dvLocalEnProceso= 0;
         int ciclo = 0;
         int indice = 0;
         while (!turnos.isEmpty())
         {
-            int i = turnos.poll();
-            if (ciclo<6)
-            {
-                if (ciclo%2==0)
-                {
-                    indice++;
-                }
-                ciclo+=1;
-                
-            }
-            else
-            {
-                ciclo=0;
-                indice=0;
-                dvLocalEnProceso++;
-            }
-            
+            int i = turnos.poll();        
             System.out.println("Turno proc: "+i);
             Proceso proc_i = procesos.get(i);
             System.out.println("PROC "+i+" analizando linea_: "+referenciasProcesadas[i]);
@@ -317,6 +276,7 @@ public class Opcion2 {
 
         }
 
+        
         for (int i = 0; i<NPROC;i++)
         {
             System.out.println("-----------------------------");
