@@ -22,6 +22,9 @@ public class Opcion2 {
         int[] marcosCargados = new int[NMARCOS]; //sirve para saber si un marco esta lleno o no
         int[] paginasEnMarcos = new int[NMARCOS];
         Arrays.fill(marcosCargados,-1); //-1 significa que no hay nada cargado ahí
+        Arrays.fill(paginasEnMarcos,-1);
+        Arrays.fill(contadoresLRU,0L);
+        Arrays.fill(marcosAsignados,-1);
         int TPglobal = 0; 
        
         int[] offset = new int[NPROC];
@@ -94,13 +97,16 @@ public class Opcion2 {
             else if(i==1)
             {
                 offset[i] = procesos.get(0).getNP()*TP;
+            }else if(i==0)
+            {
+                offset[i] = 0;
             }
             
             TPglobal = TP;
             System.out.println("PROC "+i+"== Terminó de leer archivo de configuración ==");
             Proceso proc_i = new Proceso( NF, NC, NR, NP, listaDV);
             dvEnProceso[i]=listaDV.get(0);
-            referenciasProcesadas[i] = dvEnProceso[i]/4; //4 por que son enteros
+            referenciasProcesadas[i] = 0; //4 por que son enteros
             //System.out.println(dvEnProceso[i]);
             procesos.put(i, proc_i);
             turnos.add(i);
@@ -163,7 +169,7 @@ public class Opcion2 {
                     hit = true;
                 }
                 else{
-                    huboFallosPagina[i]=false;
+                    huboFallosPagina[i]=false;  
                 }
                 
                 
@@ -183,11 +189,13 @@ public class Opcion2 {
                 }
                 if (marcoLibre!=-1)
                 {
+                    System.out.println("sin reemplazo");
                     //fallo de página sin reemplazo
                     
                     //tablaPaginas[paginaActual] =marcoLibre;
                     tablaPaginas[paginaActual] = marcoLibre;
-                    paginasEnMarcos[marcoLibre] = (offset[i]/TPglobal)+paginaActual;
+                    //paginasEnMarcos[marcoLibre] = (offset[i]/TPglobal)+paginaActual;
+                    paginasEnMarcos[marcoLibre] = paginaActual;
                     marcosCargados[marcoLibre] =i;
                     proc_i.updateTP(tablaPaginas);
                     turnos.add(i);
@@ -197,27 +205,35 @@ public class Opcion2 {
                 else
                 {
                     //fallo de página con reemplazo
-                    
+                    System.out.println("con reemplazo");
                     long minimo = Long.MAX_VALUE;
                     int marcoAReemplazar = -1;
                     for (int j = 0; j < contadoresLRU.length; j++) {
-                        if (contadoresLRU[j] < minimo) {
+                        if (marcosAsignados[j] == i && contadoresLRU[j] < minimo) {
                             minimo = contadoresLRU[j];
                             marcoAReemplazar = j;
                         }
                     }
-
+                    // System.out.println("marcoAReemplazar : "+marcoAReemplazar);
+                    // System.out.println("pagina actual : "+paginaActual);
+                    // System.out.println("proceso : "+i);
+                    // System.out.println("offset : "+offset[i]);
+                    // System.out.println("parginas en marco a reemplazar : "+ paginasEnMarcos[marcoAReemplazar]);
                     // tablaPaginas[paginaActual] = tablaPaginas[marcoAReemplazar];
                     // tablaPaginas[marcoAReemplazar] = -1;
                     
                     //tablaPaginas[(offset[i]/TPglobal)+paginaActual] = tablaPaginas[paginasEnMarcos[marcoAReemplazar]];
                     tablaPaginas[paginaActual] = marcoAReemplazar;
-                    tablaPaginas[paginasEnMarcos[marcoAReemplazar] - offset[i]/TPglobal] = -1;
-                    paginasEnMarcos[marcoAReemplazar] = (offset[i]/TPglobal)+paginaActual;
-                    //tablaPaginas[paginasEnMarcos[marcoAReemplazar]] = -1;
+                    
+                    //tablaPaginas[paginasEnMarcos[marcoAReemplazar] - offset[i]/TPglobal] = -1;
+                    tablaPaginas[paginasEnMarcos[marcoAReemplazar]] = -1;
+                    paginasEnMarcos[marcoAReemplazar] = paginaActual;
+
+                    
                     marcosCargados[marcoAReemplazar] =i;
                     proc_i.updateTP(tablaPaginas);
                     turnos.add(i);
+                    contadoresLRU[marcoAReemplazar] = 0; 
                     proc_i.swaps+=2;
 
                 }
@@ -225,6 +241,7 @@ public class Opcion2 {
             if (hit)
             {
                 System.out.println("PROC "+i+" hits: "+proc_i.hits);
+                
             }
 
             //LRU
@@ -241,7 +258,8 @@ public class Opcion2 {
                 }
             }
             
-            if (referenciasProcesadas[i] < proc_i.getNR() - 1) {
+            
+            if (referenciasProcesadas[i] < proc_i.getNR()-1 ) {
                 if (!falloPagina) {
                     turnos.add(i);
                     referenciasProcesadas[i]++;
@@ -268,11 +286,23 @@ public class Opcion2 {
                     if (marcosAsignados[marco]==i)
                     {
                         System.out.println("PROC "+i+" removiendo marco: "+marco);
-                        System.out.println("PROC "+i+" asignando marco nuevo: "+marco);
+                        System.out.println("PROC "+procesoConMasFallas+" asignando marco nuevo: "+marco);
                         marcosAsignados[marco] = procesoConMasFallas;
+                        marcosCargados[marco] = -1;
+                        
                         
                     }
 
+                }
+                Arrays.fill(tablaPaginas, -1);
+                proc_i.updateTP(tablaPaginas);
+                if (turnos.peek()!=null)
+                {
+                    if (turnos.peek()==i)
+                    {
+                        turnos.poll();
+                    }
+                    
                 }
             }
            
