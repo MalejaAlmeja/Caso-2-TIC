@@ -59,9 +59,6 @@ public class Opcion1 {
                 int colActual = 0;
                 while (!recorrida)
                 {
-                    // System.out.println(M1PTR + filActual*colActual*4);
-                    // System.out.println((M2PTR + filActual*colActual*4));
-                    // System.out.println((M3PTR + filActual*colActual*4));
                     int PcorrespondienteM1 = (M1PTR + filActual*NC*4+colActual*4)/TP;
                     int PcorrespondienteM2 = (M2PTR + filActual*NC*4+colActual*4)/TP;
                     int PcorrespondienteM3 = (M3PTR + filActual*NC*4+colActual*4)/TP;
@@ -97,17 +94,6 @@ public class Opcion1 {
         
         System.out.println("Opción 1 ejecutada.");
     }
-
-    // public void sumarMatrices(int pnf, int pnc) {
-    // int filas = pnf;
-    // int columnas = pnc;
-
-    // for (int i = 0; i < filas; i++) {
-    //     for (int j = 0; j < columnas; j++) {
-    //         matriz3[i][j] = matriz1[i][j] + matriz2[i][j];
-    //     }
-    // }
-    //}
 }
 
 
