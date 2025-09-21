@@ -1,112 +1,14 @@
 Proceso: 0
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
+- Num referencias: 24300
+- Fallas: 95
+- Hits: 24205
+- SWAP: 95
+- Tasa fallas: 0.0039
+- Tasa éxito: 0.9961
 Proceso: 1
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
-Proceso: 2
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
-Proceso: 3
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
-Proceso: 4
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
-Proceso: 5
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
-Proceso: 6
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
-Proceso: 7
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
-Proceso: 8
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
-Proceso: 9
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
-Proceso: 10
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
-Proceso: 11
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
-Proceso: 12
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
-Proceso: 13
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
-Proceso: 14
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
-Proceso: 15
-- Num referencias: 30000
-- Fallas: 15
-- Hits: 29985
-- SWAP: 15
-- Tasa fallas: 5.0E-4
-- Tasa éxito: 0.9995
+- Num referencias: 24300
+- Fallas: 95
+- Hits: 24205
+- SWAP: 95
+- Tasa fallas: 0.0039
+- Tasa éxito: 0.9961

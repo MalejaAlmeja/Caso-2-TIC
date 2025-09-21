@@ -103,23 +103,25 @@ public class Opcion2 {
                     System.out.println("=========================");
                     System.out.println("Termino proc:" + p.numeroProceso);
                     System.out.println("=========================");
-                    procesos.remove(p);
                     procesosTerminados.add(p);
                     int marcoInicialLiberado= p.marcoInicial;
                     int marcoFinalLiberado= p.marcoFinal;
                     for (int i=p.marcoInicial; i <= p.marcoFinal; i++) {
                     System.out.println("PROC "+p.numeroProceso+": removiendo marco "+i);
                     }
-                    if (procesos.isEmpty() ){
+                    if (procesosTerminados.size() == NPROC){
                         terminado = true;
                         break;
                     }
+                    if (procesosTerminados.contains(p)){
+                    continue;
+                    }   
                     if (matricesIguales){
                         for (Proceso p2:procesos){
                             System.out.println("=========================");
                             System.out.println("Termino proc:" + p2.numeroProceso);
                             System.out.println("=========================");
-                            for (int i=p2.marcoInicial; i <= p2.marcoFinal; i++) {
+                            for (int i=p2.marcoInicial; i < p2.marcoFinal; i++) {
                             System.out.println("PROC "+p2.numeroProceso+": removiendo marco "+i);
                             }
                             procesosTerminados.add(p2);
