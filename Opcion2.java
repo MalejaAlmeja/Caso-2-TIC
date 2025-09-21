@@ -1,8 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,10 +22,13 @@ public class Opcion2 {
         int[] referenciasProcesadas = new int[NPROC]; //sirve para saber el número de línea
         int[] marcosCargados = new int[NMARCOS]; //sirve para saber si un marco esta lleno o no
         int[] paginasEnMarcos = new int[NMARCOS];
+        // nuevo
+        boolean [] procesosActivos = new boolean[NPROC];
         Arrays.fill(marcosCargados,-1); //-1 significa que no hay nada cargado ahí
         Arrays.fill(paginasEnMarcos,-1);
         Arrays.fill(contadoresLRU,0L);
         Arrays.fill(marcosAsignados,-1);
+        Arrays.fill(procesosActivos,true);
         int TPglobal = 0; 
        
         
@@ -75,12 +78,9 @@ public class Opcion2 {
             
             for (int j=i*marcosProceso;j<i*marcosProceso+marcosProceso;j++)
             {
-                
                 marcosAsignados[j] = i;
-                System.out.println("Proceso "+i+": recibe marco "+j);
-                
+                System.out.println("Proceso "+i+": recibe marco "+j);   
             }
-            
             TPglobal = TP;
             System.out.println("PROC "+i+"== Terminó de leer archivo de configuración ==");
             Proceso proc_i = new Proceso( NF, NC, NR, NP, listaDV);
@@ -95,8 +95,6 @@ public class Opcion2 {
         System.out.println("\n Simulación:");
         boolean[] huboFallosPagina = new boolean[NPROC];
         Arrays.fill(huboFallosPagina,false);
-        int ciclo = 0;
-        int indice = 0;
         while (!turnos.isEmpty())
         {
             int i = turnos.poll();        
@@ -110,17 +108,9 @@ public class Opcion2 {
             boolean falloPagina = false;
             boolean hit = false;
             
-            //if (tablaPaginas[paginaActual]==-1)
             if (tablaPaginas[paginaActual]==-1)
             {
                 falloPagina = true;
-                ciclo=ciclo-1;
-                if (ciclo%2==0)
-                {
-                    indice = indice-1;
-                }
-                
-                
             }
             else
             {
@@ -155,6 +145,7 @@ public class Opcion2 {
                     
                     //tablaPaginas[paginaActual] =marcoLibre;
                     tablaPaginas[paginaActual] = marcoLibre;
+                    contadoresLRU[marcoLibre] = 0L; //se acaba de usar
                     //paginasEnMarcos[marcoLibre] = (offset[i]/TPglobal)+paginaActual;
                     paginasEnMarcos[marcoLibre] = paginaActual;
                     marcosCargados[marcoLibre] =i;
@@ -167,11 +158,11 @@ public class Opcion2 {
                 {
                     //fallo de página con reemplazo
                     System.out.println("con reemplazo");
-                    long minimo = Long.MAX_VALUE;
+                    long max = Long.MIN_VALUE;
                     int marcoAReemplazar = -1;
                     for (int j = 0; j < contadoresLRU.length; j++) {
-                        if (marcosAsignados[j] == i && contadoresLRU[j] < minimo) {
-                            minimo = contadoresLRU[j];
+                        if (marcosAsignados[j] == i && contadoresLRU[j] > max) {
+                            max = contadoresLRU[j];
                             marcoAReemplazar = j;
                         }
                     }
@@ -186,7 +177,6 @@ public class Opcion2 {
                     //tablaPaginas[(offset[i]/TPglobal)+paginaActual] = tablaPaginas[paginasEnMarcos[marcoAReemplazar]];
                     tablaPaginas[paginaActual] = marcoAReemplazar;
                     
-                    //tablaPaginas[paginasEnMarcos[marcoAReemplazar] - offset[i]/TPglobal] = -1;
                     tablaPaginas[paginasEnMarcos[marcoAReemplazar]] = -1;
                     paginasEnMarcos[marcoAReemplazar] = paginaActual;
 
@@ -207,17 +197,15 @@ public class Opcion2 {
 
             //LRU
             System.out.println("PROC "+i+" Envejecimiento"); // como se corren los bits de los anteriores 'ticks' se dice que envejece
-            for (int j= 0;j<NMARCOS;j++)
-            {
-                
-                contadoresLRU[j] >>= 1;
-                
-                //if (j==((TPglobal*marcosProceso*i+dvEnProceso[i])/TPglobal)) //Esta opción no sirve si más adelante se asignan los marcos a procesos con más fallas.
-                if (j==(tablaPaginas[paginaActual]))
-                {
-                    contadoresLRU[j] |= (1L<<63); //Esto lo que hace es básicamente registrar el acceso en este 'tick de reloj'
+            for (int j=0; j<NMARCOS; j++) {
+                if (marcosAsignados[j] == i) {        // <-- Solo los marcos de i
+                    contadoresLRU[j] >>= 1;
                 }
             }
+            if (tablaPaginas[paginaActual] != -1) {
+                contadoresLRU[tablaPaginas[paginaActual]] |= (1L<<63);
+            }
+            
             
             
             if (referenciasProcesadas[i] < proc_i.getNR()-1 ) {
@@ -230,16 +218,21 @@ public class Opcion2 {
                 System.out.println("=====================================");
                 System.out.println("Termino PROC " + i);
                 System.out.println("=====================================");
+                procesosActivos[i]=false;
                 Integer maxFallas = Integer.MIN_VALUE;
                 Integer procesoConMasFallas = -1;
                 for (int p = 0; p<NPROC ;p++)
                 {
-                    if (procesos.get(p).fallas>maxFallas)
+                    if (procesosActivos[p] && procesos.get(p).fallas>maxFallas)
                     {
                         procesoConMasFallas = p;
                         maxFallas = procesos.get(p).fallas;
                         
                     }
+                }
+                if (procesoConMasFallas==-1)
+                {
+                    continue;
                 }
                 for (int marco = 0; marco<NMARCOS;marco++)
                 {
@@ -271,17 +264,17 @@ public class Opcion2 {
          try (PrintWriter writer = new PrintWriter(new FileWriter("Salida.txt"))) {
             for (int i = 0; i<NPROC;i++)
         {
-            System.out.println("-----------------------------");
-            System.out.println("PROCESO: "+i);
+            writer.println("-----------------------------");
+            writer.println("PROCESO: "+i);
             Proceso proc_i = procesos.get(i);
-            System.out.println("- Num referencias: "+proc_i.getNR());
-            System.out.println("- Fallas : "+proc_i.fallas);
-            System.out.println("- Hits : "+(proc_i.hits));
-            System.out.println("- SWAPS : "+(proc_i.swaps));
+            writer.println("- Num referencias: "+proc_i.getNR());
+            writer.println("- Fallas : "+proc_i.fallas);
+            writer.println("- Hits : "+(proc_i.hits));
+            writer.println("- SWAPS : "+(proc_i.swaps));
             double tasaFallas = (double) proc_i.fallas / proc_i.getNR();
-            System.out.println("- Tasa fallas: "+String.format("%.4f", tasaFallas));
+            writer.println("- Tasa fallas: "+String.format("%.4f", tasaFallas));
             double tasaExitos = (double) (proc_i.hits) / proc_i.getNR();
-            System.out.println("- Tasa éxito: "+String.format("%.4f", tasaExitos));
+            writer.println("- Tasa éxito: "+String.format("%.4f", tasaExitos));
         }
         } catch (IOException e) {
                 e.printStackTrace();
