@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -264,20 +266,10 @@ public class Opcion2 {
                     
                 }
             }
-           
-
-            
-
-
-
-
-
-
-
         }
 
-        
-        for (int i = 0; i<NPROC;i++)
+         try (PrintWriter writer = new PrintWriter(new FileWriter("Salida.txt"))) {
+            for (int i = 0; i<NPROC;i++)
         {
             System.out.println("-----------------------------");
             System.out.println("PROCESO: "+i);
@@ -291,8 +283,10 @@ public class Opcion2 {
             double tasaExitos = (double) (proc_i.hits) / proc_i.getNR();
             System.out.println("- Tasa éxito: "+String.format("%.4f", tasaExitos));
         }
-
-        System.out.println("Opción 2 ejecutada.");
+        } catch (IOException e) {
+                e.printStackTrace();
+        }
+        
     }
     
 }
