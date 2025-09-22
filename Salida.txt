@@ -1,14 +1,14 @@
 Proceso: 0
 - Num referencias: 24300
-- Fallas: 95
-- Hits: 24205
-- SWAP: 95
-- Tasa fallas: 0.0039
-- Tasa éxito: 0.9961
+- Fallas: 97
+- Hits: 24203
+- SWAP: 188
+- Tasa fallas: 0.004
+- Tasa éxito: 0.996
 Proceso: 1
-- Num referencias: 24300
-- Fallas: 95
-- Hits: 24205
-- SWAP: 95
-- Tasa fallas: 0.0039
-- Tasa éxito: 0.9961
+- Num referencias: 30000
+- Fallas: 120
+- Hits: 29880
+- SWAP: 234
+- Tasa fallas: 0.004
+- Tasa éxito: 0.996

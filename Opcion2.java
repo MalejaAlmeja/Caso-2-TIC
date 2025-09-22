@@ -10,6 +10,8 @@ public class Opcion2 {
     public static void ejecutarOpcion2(int NPROC, int NMARCOS) {
         //Acá se guardarán los procesos y sus datos
         ArrayList<Proceso> procesos = new ArrayList<>();
+        ArrayList<ArrayList<Long>> contadorUso = new ArrayList<>(); 
+        long tickActual = 0;
         ArrayList<Proceso> procesosTerminados = new ArrayList<>();
         int TP = 0;
         int marcoActual = 0;
@@ -70,6 +72,11 @@ public class Opcion2 {
 
                 Proceso proceso = new Proceso(NC, NF, i, NR, marcoInicial, marcoFinal-1, listaDireccionesDV);
                 procesos.add(proceso);
+                ArrayList<Long> usoInicial = new ArrayList<>();
+                for (int j = 0; j < proceso.tablaPaginas.size(); j++) {
+                    usoInicial.add(0L);
+                }
+                contadorUso.add(usoInicial);
                 
             } catch (IOException e) {
                 System.out.print("No se ha realizado la opción 1; no hay archivos existentes.");
@@ -99,50 +106,37 @@ public class Opcion2 {
             }
             else{
             for (Proceso p:procesos){
-                if (p.listaDireccionesDV.isEmpty()){
-                    System.out.println("=========================");
-                    System.out.println("Termino proc:" + p.numeroProceso);
-                    System.out.println("=========================");
-                    procesosTerminados.add(p);
-                    int marcoInicialLiberado= p.marcoInicial;
-                    int marcoFinalLiberado= p.marcoFinal;
+                if (p.listaDireccionesDV.isEmpty()) {
+                    if (!procesosTerminados.contains(p)) {
+                        System.out.println("=========================");
+                        System.out.println("Termino proc:" + p.numeroProceso);
+                        System.out.println("=========================");
+                        procesosTerminados.add(p);
+                    }
+                    // Liberar marcos
+                    int marcoInicialLiberado = p.marcoInicial;
+                    int marcoFinalLiberado = p.marcoFinal;
                     for (int i=p.marcoInicial; i <= p.marcoFinal; i++) {
-                    System.out.println("PROC "+p.numeroProceso+": removiendo marco "+i);
+                        System.out.println("PROC "+p.numeroProceso+": removiendo marco "+i);
                     }
-                    if (procesosTerminados.size() == NPROC){
-                        terminado = true;
-                        break;
-                    }
-                    if (procesosTerminados.contains(p)){
-                    continue;
-                    }   
-                    if (matricesIguales){
-                        for (Proceso p2:procesos){
-                            System.out.println("=========================");
-                            System.out.println("Termino proc:" + p2.numeroProceso);
-                            System.out.println("=========================");
-                            for (int i=p2.marcoInicial; i < p2.marcoFinal; i++) {
-                            System.out.println("PROC "+p2.numeroProceso+": removiendo marco "+i);
+                    procesos.remove(p);
+                    if (!procesos.isEmpty()) {
+                        Proceso procesoMasFallos = procesos.get(0);
+                        for (Proceso p2 : procesos) {
+                            if (p2.fallas > procesoMasFallos.fallas) {
+                                procesoMasFallos = p2;
                             }
-                            procesosTerminados.add(p2);
                         }
-                        terminado = true;
-                        break;
-                    }
-                    Proceso procesoMasFallos = procesos.get(0);
-                    for (Proceso p2:procesos){
-                        if (p2.fallas > procesoMasFallos.fallas){
-                            procesoMasFallos = p2;
+                        procesoMasFallos.marcoInicial = marcoInicialLiberado;
+                        procesoMasFallos.marcoFinal = marcoFinalLiberado;
+                        for (int i = marcoInicialLiberado; i <= marcoFinalLiberado; i++) {
+                            System.out.println("PROC " + procesoMasFallos.numeroProceso + ": asignando marco nuevo " + i);
                         }
                     }
-                    procesoMasFallos.marcoInicial = marcoInicialLiberado;
-                    procesoMasFallos.marcoFinal = marcoFinalLiberado;
-                    for (int i=procesoMasFallos.marcoInicial; i < procesoMasFallos.marcoFinal; i++) {
-                    System.out.println("PROC "+procesoMasFallos.numeroProceso+": asignando marco nuevo "+i);
-                    }
-                    
+                    break; 
                 }
                 else{
+                tickActual++;
                 ArrayList<String> direccion = p.listaDireccionesDV.remove(0);
                 int pagina = Integer.parseInt(direccion.get(0));
                 int desplazamiento = Integer.parseInt(direccion.get(1));
@@ -150,22 +144,34 @@ public class Opcion2 {
                 
                 // Verificar si la página está en la tabla de páginas
                 if (p.tablaPaginas.contains(pagina)) {
-                    // Hit
                     p.registrarHit();
                     System.out.println("PROC "+p.numeroProceso+" hits: "+p.hits);
+                    int indicePagina = p.tablaPaginas.indexOf(pagina);
+                    contadorUso.get(p.numeroProceso).set(indicePagina, tickActual);
                 } else {
-                    // Falla de página
                     p.registrarFalla();
                     System.out.println("PROC "+p.numeroProceso+" falla de pag: "+pagina);
                     
-                    // Buscar un marco libre
                     if (p.tablaPaginas.contains(-1)) {
                         int indiceLibre = p.tablaPaginas.indexOf(-1);
                         p.tablaPaginas.set(indiceLibre, pagina);
+                        
                         p.registrarSwap();
                     } else {
-                        // No hay marcos libres LRU
-                        p.tablaPaginas.add(pagina); 
+                        ArrayList<Long> usoProceso = contadorUso.get(p.numeroProceso);
+                        long minUso = Long.MAX_VALUE;
+                        int indiceARemplazar = -1;
+
+                        for (int i = 0; i < p.tablaPaginas.size(); i++) {
+                            if (usoProceso.get(i) < minUso) {
+                                minUso = usoProceso.get(i);
+                                indiceARemplazar = i;
+                            }
+                        }
+                        System.out.println("PROC "+p.numeroProceso+" reemplazando página "+p.tablaPaginas.get(indiceARemplazar)+" por "+pagina);
+                        p.tablaPaginas.set(indiceARemplazar, pagina);
+                        usoProceso.set(indiceARemplazar, tickActual);
+                        
                         p.registrarSwap();
                         p.registrarSwap();
                     }
