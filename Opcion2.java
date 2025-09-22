@@ -65,11 +65,11 @@ public class Opcion2 {
                 }
                 System.out.println("PROC "+i+" == Terminó de leer archivo de configuración ==");
 
-            int marcoInicial = marcoActual;
-            int marcoFinal = marcoInicial + numMarcosPorProceso;
-            for (; marcoActual < marcoFinal; marcoActual++) {
-                System.out.println("Proceso "+i+": recibe marco "+marcoActual);
-            }
+                int marcoInicial = marcoActual;
+                int marcoFinal = marcoInicial + numMarcosPorProceso;
+                for (; marcoActual < marcoFinal; marcoActual++) {
+                    System.out.println("Proceso "+i+": recibe marco "+marcoActual);
+                }
 
                 Proceso proceso = new Proceso(NC, NF, i, NR, marcoInicial, marcoFinal-1, listaDireccionesDV);
                 procesos.add(proceso);
