@@ -10,7 +10,7 @@ public class Opcion2 {
     public static void ejecutarOpcion2(int NPROC, int NMARCOS) {
         //Acá se guardarán los procesos y sus datos
         ArrayList<Proceso> procesos = new ArrayList<>();
-        ArrayList<ArrayList<Long>> contadoresLRU = new ArrayList<>(); 
+        ArrayList<ArrayList<Long>> contadorUso = new ArrayList<>(); 
         long tickActual = 0;
         ArrayList<Proceso> procesosTerminados = new ArrayList<>();
         int TP = 0;
@@ -77,7 +77,7 @@ public class Opcion2 {
                 for (int j = 0; j < proceso.tablaPaginas.size(); j++) {
                     usoInicial.add(0L);
                 }
-                contadoresLRU.add(usoInicial);
+                contadorUso.add(usoInicial);
                 
             } catch (IOException e) {
                 System.out.print("No se ha realizado la opción 1; no hay archivos existentes.");
@@ -137,7 +137,7 @@ public class Opcion2 {
                         for (int i = marcoInicialLiberado; i <= marcoFinalLiberado; i++) {
                             System.out.println("PROC " + procesoMasFallos.numeroProceso + ": asignando marco nuevo " + i);
                             procesoConMasFallosAtras = procesoMasFallos.numeroProceso;
-                            contadoresLRU.get(procesoMasFallos.numeroProceso).add(0L);
+                            contadorUso.get(procesoMasFallos.numeroProceso).add(0L);
                         }
                         System.out.println("tabla paginas");
                         System.out.println(p.tablaPaginas);
@@ -156,7 +156,7 @@ public class Opcion2 {
                     p.registrarHit();
                     System.out.println("PROC "+p.numeroProceso+" hits: "+p.hits);
                     int indicePagina = p.tablaPaginas.indexOf(pagina);
-                    contadoresLRU.get(p.numeroProceso).set(indicePagina, tickActual);
+                    contadorUso.get(p.numeroProceso).set(indicePagina, tickActual);
                 } else {
                     p.registrarFalla();
                     System.out.println("PROC "+p.numeroProceso+" falla de pag: "+pagina);
@@ -164,10 +164,10 @@ public class Opcion2 {
                     if (p.tablaPaginas.contains(-1)) {
                         int indiceLibre = p.tablaPaginas.indexOf(-1);
                         p.tablaPaginas.set(indiceLibre, pagina);
-                        contadoresLRU.get(p.numeroProceso).set(indiceLibre, tickActual);
+                        contadorUso.get(p.numeroProceso).set(indiceLibre, tickActual);
                         p.registrarSwap();
                     } else {
-                        ArrayList<Long> usoProceso = contadoresLRU.get(p.numeroProceso);
+                        ArrayList<Long> usoProceso = contadorUso.get(p.numeroProceso);
                         long minUso = Long.MAX_VALUE;
                         int indiceARemplazar = -1;
 
