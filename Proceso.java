@@ -16,7 +16,7 @@ public class Proceso {
 
     ArrayList<Integer> tablaPaginas = new ArrayList<>();
     ArrayList<ArrayList<String>> listaDireccionesDV = new ArrayList<>();
-
+    ArrayList<Integer> marcosAsignados = new ArrayList<>();
     
     // Constructor
     public Proceso(int nc, int nf, int np, int nr, int mi, int mf, ArrayList<ArrayList<String>> listaDirecciones) {
@@ -31,11 +31,19 @@ public class Proceso {
         for (int i = 0; i < (mf - mi + 1); i++) {
             tablaPaginas.add(-1); // Inicializa la tabla de páginas con -1 (indica que no hay página cargada)
         }
+        for (int i = marcoInicial; i <= marcoFinal; i++) {
+            marcosAsignados.add(i);
+        }
     }
 
 
 
     // Métodos para actualizar estadísticas
+    public void nuevosMarcos(int mi, int mf) {
+        for (int i = mi; i <= mf; i++) {
+            this.marcosAsignados.add(i);
+        }
+    }
     public void registrarFalla() {
         this.fallas++;
     }

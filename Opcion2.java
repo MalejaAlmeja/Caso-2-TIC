@@ -16,6 +16,7 @@ public class Opcion2 {
         int TP = 0;
         int marcoActual = 0;
         int numMarcosPorProceso = NMARCOS / NPROC;
+        int procesoConMasFallosAtras = -1;
         boolean matricesIguales = false;
         System.out.println("Inicio:");
         //Cargar archivos
@@ -106,6 +107,12 @@ public class Opcion2 {
             }
             else{
             for (Proceso p:procesos){
+                if (procesoConMasFallosAtras==p.numeroProceso){
+                    for (int k=0; k<numMarcosPorProceso; k++){
+                        p.tablaPaginas.add(-1);
+                    }
+                    procesoConMasFallosAtras = -1;
+                }
                 if (p.listaDireccionesDV.isEmpty()) {
                     if (!procesosTerminados.contains(p)) {
                         System.out.println("=========================");
@@ -127,11 +134,13 @@ public class Opcion2 {
                                 procesoMasFallos = p2;
                             }
                         }
-                        procesoMasFallos.marcoInicial = marcoInicialLiberado;
-                        procesoMasFallos.marcoFinal = marcoFinalLiberado;
                         for (int i = marcoInicialLiberado; i <= marcoFinalLiberado; i++) {
                             System.out.println("PROC " + procesoMasFallos.numeroProceso + ": asignando marco nuevo " + i);
+                            procesoConMasFallosAtras = procesoMasFallos.numeroProceso;
+                            contadorUso.get(procesoMasFallos.numeroProceso).add(0L);
                         }
+                        System.out.println("tabla paginas");
+                        System.out.println(p.tablaPaginas);
                     }
                     break; 
                 }
@@ -155,7 +164,7 @@ public class Opcion2 {
                     if (p.tablaPaginas.contains(-1)) {
                         int indiceLibre = p.tablaPaginas.indexOf(-1);
                         p.tablaPaginas.set(indiceLibre, pagina);
-                        
+                        contadorUso.get(p.numeroProceso).set(indiceLibre, tickActual);
                         p.registrarSwap();
                     } else {
                         ArrayList<Long> usoProceso = contadorUso.get(p.numeroProceso);
