@@ -90,17 +90,7 @@ public class Opcion2 {
                 System.out.println("Proceso "+i+": recibe marco "+j);
                 
             }
-            if (i>1)
-            {
-                offset[i]=offset[i-1];
-            }
-            else if(i==1)
-            {
-                offset[i] = procesos.get(0).getNP()*TP;
-            }else if(i==0)
-            {
-                offset[i] = 0;
-            }
+            
             
             TPglobal = TP;
             System.out.println("PROC "+i+"== Terminó de leer archivo de configuración ==");
