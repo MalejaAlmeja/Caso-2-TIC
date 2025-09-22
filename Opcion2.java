@@ -151,12 +151,18 @@ public class Opcion2 {
                 int desplazamiento = Integer.parseInt(direccion.get(1));
                 String rw = direccion.get(2);
                 
+                //ArrayList<Long> usoProceso = contadoresLRU.get(p.numeroProceso);
+                System.out.println("PROC "+p.numeroProceso+" envejecimiento");
+                // for (int i = 0; i < contadoresLRU.get(p.numeroProceso).size(); i++) {
+                //     contadoresLRU.get(p.numeroProceso).set(i, contadoresLRU.get(p.numeroProceso).get(i) >> 1);
+                // }
                 // Verificar si la página está en la tabla de páginas
                 if (p.tablaPaginas.contains(pagina)) {
                     p.registrarHit();
                     System.out.println("PROC "+p.numeroProceso+" hits: "+p.hits);
                     int indicePagina = p.tablaPaginas.indexOf(pagina);
                     contadoresLRU.get(p.numeroProceso).set(indicePagina, tickActual);
+                    //contadoresLRU.get(p.numeroProceso).set(indicePagina, contadoresLRU.get(p.numeroProceso).get(indicePagina) | (1L<<63));
                 } else {
                     p.registrarFalla();
                     System.out.println("PROC "+p.numeroProceso+" falla de pag: "+pagina);
@@ -165,6 +171,7 @@ public class Opcion2 {
                         int indiceLibre = p.tablaPaginas.indexOf(-1);
                         p.tablaPaginas.set(indiceLibre, pagina);
                         contadoresLRU.get(p.numeroProceso).set(indiceLibre, tickActual);
+                        //contadoresLRU.get(p.numeroProceso).set(indiceLibre, 0L);
                         p.registrarSwap();
                     } else {
                         ArrayList<Long> usoProceso = contadoresLRU.get(p.numeroProceso);
@@ -172,21 +179,21 @@ public class Opcion2 {
                         int indiceARemplazar = -1;
 
                         for (int i = 0; i < p.tablaPaginas.size(); i++) {
-                            if (usoProceso.get(i) < minUso) {
-                                minUso = usoProceso.get(i);
+                            if (contadoresLRU.get(p.numeroProceso).get(i) < minUso) {
+                                minUso = contadoresLRU.get(p.numeroProceso).get(i);
                                 indiceARemplazar = i;
                             }
                         }
                         System.out.println("PROC "+p.numeroProceso+" reemplazando página "+p.tablaPaginas.get(indiceARemplazar)+" por "+pagina);
                         p.tablaPaginas.set(indiceARemplazar, pagina);
                         usoProceso.set(indiceARemplazar, tickActual);
-                        
+                        //contadoresLRU.get(p.numeroProceso).set(indiceARemplazar, 0L);
                         p.registrarSwap();
                         p.registrarSwap();
                     }
                     
                 }
-                System.out.println("PROC "+p.numeroProceso+" envejecimiento");}
+                }
             
         
             }}
