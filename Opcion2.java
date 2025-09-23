@@ -1,3 +1,5 @@
+//Juan José Cortes - 20232
+// Maria Alejandra Carrillo - 202321854
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;

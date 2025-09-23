@@ -1,4 +1,5 @@
-
+//Juan José Cortes - 20232
+// Maria Alejandra Carrillo - 202321854
 import java.util.ArrayList;
 
 public class Proceso {
