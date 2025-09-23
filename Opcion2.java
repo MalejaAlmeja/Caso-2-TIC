@@ -17,6 +17,7 @@ public class Opcion2 {
         int marcoActual = 0;
         int numMarcosPorProceso = NMARCOS / NPROC;
         int procesoConMasFallosAtras = -1;
+        int marcosProcesoTerminado = -1;
         boolean matricesIguales = false;
         System.out.println("Inicio:");
         //Cargar archivos
@@ -108,10 +109,14 @@ public class Opcion2 {
             else{
             for (Proceso p:procesos){
                 if (procesoConMasFallosAtras==p.numeroProceso){
-                    for (int k=0; k<numMarcosPorProceso; k++){
-                        p.tablaPaginas.add(-1);
+                    // for (int k=0; k<numMarcosPorProceso; k++){
+                    //     p.tablaPaginas.add(-1);
+                    // }
+                    for (int k=0; k<marcosProcesoTerminado; k++){
+                         p.tablaPaginas.add(-1);
                     }
                     procesoConMasFallosAtras = -1;
+                    marcosProcesoTerminado=-1;
                 }
                 if (p.listaDireccionesDV.isEmpty()) {
                     if (!procesosTerminados.contains(p)) {
@@ -139,8 +144,10 @@ public class Opcion2 {
                             procesoConMasFallosAtras = procesoMasFallos.numeroProceso;
                             contadoresLRU.get(procesoMasFallos.numeroProceso).add(0L);
                         }
+                        marcosProcesoTerminado = procesoMasFallos.tablaPaginas.size();
                         System.out.println("tabla paginas");
                         System.out.println(p.tablaPaginas);
+
                     }
                     break; 
                 }
