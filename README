@@ -1,0 +1,12 @@
+El Main se encuentra en Consola.java de modo que es necesario correrlo siempre que se quiera correr alguna de las dos opciones.
+Entonces el menú despliega la opción de correr la opción 1 y la opción 2. Por cada run es necesario en caso de querer correr la
+opción 1 con diferentes datos, borrar los procesos generados previamente, para esto está la opción 3 del menú que borra los archi-
+vos de la carpeta cuyo nombre sigue el patrón de proc{digito}.txt.
+Entonces pasos para ejecución:
+
+1. Correr Consola
+2. Ejecutar opción 1 (la opción uno pide el nombre de un archivo que debe seguir el formato del archivo de configuración de ejemplo
+   que encontraran en esta carpeta que se llama config.txt, entonces el parametro de entrada para la opción 1 sería escribir directamente
+   config.txt)
+3. Ejecutar opción 2 (pide por consola el número de procesos NPROC y el número de marcos en memoria física NMARC, acá la salida no se especifico el formato entonces se inscribe en el archivo Salida.txt. Ahí quedan los resumenes de los procesos; hits, fallas, etc.)
+4. En caso de querer correr la opción uno de nuevo, por favor, borre los archivos antes generados con la opción 3 del menú

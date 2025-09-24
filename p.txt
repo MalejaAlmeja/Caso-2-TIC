@@ -1,3 +1,0 @@
-TP=512
-NPROC=3
-TAMS=8x8,8x8,8x8
